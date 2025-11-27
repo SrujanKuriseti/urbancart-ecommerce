@@ -5,7 +5,7 @@ class AuthController {
     try {
       const { email, password, firstName, lastName } = req.body;
       const result = await AuthService.register(email, password, firstName, lastName);
-      
+
       res.status(201).json({
         message: 'Registration successful',
         user: result.user,
@@ -21,7 +21,7 @@ class AuthController {
     try {
       const { email, password } = req.body;
       const result = await AuthService.login(email, password);
-      
+
       res.json({
         message: 'Login successful',
         user: result.user,
@@ -29,7 +29,10 @@ class AuthController {
         token: result.token
       });
     } catch (error) {
-      next(error);
+      console.error('LOGIN ERROR:', error); // <‑‑ add this
+      return res
+        .status(500)
+        .json({ error: error.message || 'Login failed' }); // <‑‑ and this
     }
   }
 
