@@ -29,13 +29,10 @@ class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    // TEMP: bypass password check for admin so you can log in
-    if (email !== 'admin@store.com') {
-      // Verify password for all non-admin users
-      const isValid = await UserDAO.verifyPassword(user, password);
-      if (!isValid) {
-        throw new Error('Invalid credentials');
-      }
+    // Verify password for all users (admin + customers)
+    const isValid = await UserDAO.verifyPassword(user, password);
+    if (!isValid) {
+      throw new Error('Invalid credentials');
     }
 
     // Get customer profile (if not admin)
@@ -57,6 +54,7 @@ class AuthService {
       token
     };
   }
+
 
 
   generateToken(user) {
