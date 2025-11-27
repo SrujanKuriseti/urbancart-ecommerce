@@ -24,25 +24,21 @@ class AuthService {
 
   async login(email, password) {
     // Find user
-    const user = await UserDAO.findByEmail(email);
-    if (!user) {
-      throw new Error('Invalid credentials');
-    }
+    const user = await UserDAO.findByEmail(email)
+    if (!user) throw new Error('Invalid credentials')
 
-    // Verify password for all users (admin + customers)
-    const isValid = await UserDAO.verifyPassword(user, password);
-    if (!isValid) {
-      throw new Error('Invalid credentials');
-    }
+    // Verify password for ALL users (no bypass!)
+    const isValid = await UserDAO.verifyPassword(user, password)
+    if (!isValid) throw new Error('Invalid credentials')
 
-    // Get customer profile (if not admin)
-    let customer = null;
-    if (user.role === 'customer') {
-      customer = await CustomerDAO.findByUserId(user.id);
+    // Get customer profile if not admin
+    let customer = null
+    if (user.role !== 'admin') {
+      customer = await CustomerDAO.findByUserId(user.id)
     }
 
     // Generate token
-    const token = this.generateToken(user);
+    const token = this.generateToken(user)
 
     return {
       user: {
@@ -52,10 +48,8 @@ class AuthService {
       },
       customer,
       token
-    };
+    }
   }
-
-
 
   generateToken(user) {
     return jwt.sign(
