@@ -25,7 +25,7 @@ class UserDAO extends BaseDAO {
   }
 
   async verifyPassword(user, password) {
-    return await bcrypt.compare(password, user.password_hash);
+    return await bcrypt.compare(password, user.password_hash) 
   }
 }
 
