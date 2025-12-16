@@ -16,7 +16,7 @@ const AdminDashboard = () => {
     image_url: "",
     category: "",
     brand: "",
-    quantity: 0,
+    quantity: "",
   });
 
   useEffect(() => {
