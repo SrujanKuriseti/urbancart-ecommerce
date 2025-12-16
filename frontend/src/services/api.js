@@ -48,6 +48,7 @@ export const catalogAPI = {
     api.patch(`/catalog/items/${itemId}/inventory`, { quantity }),
   getItemById: (id) => api.get(`/catalog/items/${id}`),
   filterItems: (params) => api.get('/catalog/items/filter', { params }),
+  createItem: (data) => api.post('/catalog/items', data),
 };
 
 // Cart API
