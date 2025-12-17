@@ -42,9 +42,10 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const res = customerAPI.getProfile();
-        console.log("👤 CUSTOMER API:", res.data);
-        setCurrentUserId(res.data.id);
+        const profileRes = await customerAPI.getProfile();
+        console.log("👤 CUSTOMER ID:", profileRes.data.id);
+        console.log("👤 FULL PROFILE:", profileRes.data);
+        setCurrentUserId(profileRes.data.id);
       } catch (err) {
         console.error("Customer API failed:", err);
       }
