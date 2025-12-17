@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { catalogAPI } from '../services/api';
 import { cartAPI } from '../services/api';
-import useAuth from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const placeholder = "https://via.placeholder.com/400x260?text=No+Image";
@@ -10,7 +10,7 @@ const placeholder = "https://via.placeholder.com/400x260?text=No+Image";
 const ProductDetails = () => {
 const { itemId } = useParams();
 const [product, setProduct] = useState(null);
-const isAuthenticated = useAuth();
+const { isAuthenticated } = useAuth(); 
 const navigate = useNavigate();
 
 useEffect(() => {
@@ -26,7 +26,7 @@ const handleAddToCart = async () => {
   } catch (error) {
     const msg = error.response?.data?.error || 'Failed to add to cart';
     alert(msg);
-    if (error.response?.status === 401 && !isAuthenticated) {
+    if (error.response?.status === 401 && !isAuthenticated()) {
       navigate('/login');
     }
   }
