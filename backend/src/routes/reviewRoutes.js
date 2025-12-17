@@ -8,7 +8,7 @@ router.get('/item/:itemId', ReviewController.getItemReviews);
 router.post(
   '/item/:itemId',
   authenticateToken,
-  ReviewController.addOrUpdateReview
+  ReviewController.submitReview
 );
 
 module.exports = router;
