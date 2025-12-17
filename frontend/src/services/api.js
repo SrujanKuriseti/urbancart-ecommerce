@@ -82,4 +82,9 @@ export const adminAPI = {
   updateInventory: (itemId, quantity) => api.patch(`/catalog/items/${itemId}/inventory`, { quantity }),
 };
 
+export const reviewAPI = {
+  getItemReviews: (itemId) => api.get(`/reviews/item/${itemId}`),
+  submitReview: (itemId, data) => api.post(`/reviews/item/${itemId}`, data),
+};
+
 export default api;

@@ -9,6 +9,7 @@ const orderRoutes = require('./src/routes/orderRoutes');
 const customerRoutes = require('./src/routes/customerRoutes');
 const errorHandler = require('./src/middleware/errorHandler');
 const database = require('./src/config/database');
+const reviewRoutes = require('./src/routes/reviewRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,8 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://urbancart-ecommerce.vercel.app',
 ];
+
+app.locals.db = database;
 
 // Middleware
 app.use(
@@ -50,6 +53,7 @@ app.use('/api/catalog', catalogRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/customers', customerRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Error handling
 app.use(errorHandler);
