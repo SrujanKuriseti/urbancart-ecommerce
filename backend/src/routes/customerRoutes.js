@@ -9,11 +9,7 @@ const { authenticateToken, authorizeRole } = require("../middleware/auth");
 // Customer routes
 router.get("/profile", authenticateToken, CustomerController.getProfile);
 router.put("/profile", authenticateToken, CustomerController.updateProfile);
-router.post(
-  "/addresses",
-  authenticateToken,
-  CustomerController.createAddress
-);
+router.post("/addresses", authenticateToken, CustomerController.createAddress);
 router.put(
   "/addresses/:addressId",
   authenticateToken,
@@ -40,6 +36,13 @@ router.delete(
   authenticateToken,
   authorizeRole("admin"),
   CustomerController.deactivateCustomer
+);
+
+router.post(
+  "/:customerId/activate",
+  authenticateToken,
+  authorizeRole("admin"),
+  CustomerController.activateCustomer
 );
 
 module.exports = router;

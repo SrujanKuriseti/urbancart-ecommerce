@@ -75,6 +75,7 @@ export const customerAPI = {
   getAllCustomers: () => api.get('/customers'),
   updateCustomer: (id, data) => api.put(`/customers/${id}`, data),
   deactivateCustomer: (id) => api.delete(`/customers/${id}`),
+  activateCustomer: (id) => api.post(`/customers/${id}/activate`),
 };
 
 

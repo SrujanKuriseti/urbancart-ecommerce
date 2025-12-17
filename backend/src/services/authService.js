@@ -1,20 +1,24 @@
-const jwt = require('jsonwebtoken');
-const UserDAO = require('../dao/UserDAO');
-const CustomerDAO = require('../dao/CustomerDAO');
+const jwt = require("jsonwebtoken");
+const UserDAO = require("../dao/UserDAO");
+const CustomerDAO = require("../dao/CustomerDAO");
 
 class AuthService {
   async register(email, password, firstName, lastName) {
     // Check if user exists
     const existingUser = await UserDAO.findByEmail(email);
     if (existingUser) {
-      throw new Error('Email already registered');
+      throw new Error("Email already registered");
     }
 
     // Create user
     const user = await UserDAO.createUser(email, password);
 
     // Create customer profile
-    const customer = await CustomerDAO.createCustomer(user.id, firstName, lastName);
+    const customer = await CustomerDAO.createCustomer(
+      user.id,
+      firstName,
+      lastName
+    );
 
     // Generate JWT token
     const token = this.generateToken(user);
@@ -24,31 +28,36 @@ class AuthService {
 
   async login(email, password) {
     // Find user
-    const user = await UserDAO.findByEmail(email)
-    if (!user) throw new Error('Invalid credentials')
+    const user = await UserDAO.findByEmail(email);
+    if (!user) throw new Error("Invalid credentials");
+
+    // Block deactivated accounts
+    if (user.is_active === false) {
+      throw new Error("Account is deactivated");
+    }
 
     // Verify password for ALL users (no bypass!)
-    const isValid = await UserDAO.verifyPassword(user, password)
-    if (!isValid) throw new Error('Invalid credentials')
+    const isValid = await UserDAO.verifyPassword(user, password);
+    if (!isValid) throw new Error("Invalid credentials");
 
     // Get customer profile if not admin
-    let customer = null
-    if (user.role !== 'admin') {
-      customer = await CustomerDAO.findByUserId(user.id)
+    let customer = null;
+    if (user.role !== "admin") {
+      customer = await CustomerDAO.findByUserId(user.id);
     }
 
     // Generate token
-    const token = this.generateToken(user)
+    const token = this.generateToken(user);
 
     return {
       user: {
         id: user.id,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
       customer,
-      token
-    }
+      token,
+    };
   }
 
   generateToken(user) {
@@ -56,10 +65,10 @@ class AuthService {
       {
         userId: user.id,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: "7d" }
     );
   }
 
@@ -67,7 +76,7 @@ class AuthService {
     try {
       return jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-      throw new Error('Invalid or expired token');
+      throw new Error("Invalid or expired token");
     }
   }
 }

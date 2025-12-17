@@ -78,9 +78,18 @@ class CustomerDAO {
 
   async deactivateCustomer(customerId) {
     await this.db.query(
-      `UPDATE customers
-       SET updated_at = CURRENT_TIMESTAMP
-       WHERE id = $1`,
+      `UPDATE users
+     SET is_active = FALSE
+     WHERE id = (SELECT user_id FROM customers WHERE id = $1)`,
+      [customerId]
+    );
+  }
+
+  async activateCustomer(customerId) {
+    await this.db.query(
+      `UPDATE users
+     SET is_active = TRUE
+     WHERE id = (SELECT user_id FROM customers WHERE id = $1)`,
       [customerId]
     );
   }

@@ -134,6 +134,16 @@ class CustomerController {
       next(error);
     }
   }
+
+  async activateCustomer(req, res, next) {
+    try {
+      const { customerId } = req.params;
+      await CustomerDAO.activateCustomer(customerId);
+      res.json({ message: "Customer reactivated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new CustomerController();

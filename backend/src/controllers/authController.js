@@ -29,15 +29,14 @@ class AuthController {
         token: result.token
       });
     } catch (error) {
-      console.error('LOGIN ERROR:', error); // <‑‑ add this
+      console.error('LOGIN ERROR:', error); 
       return res
         .status(500)
-        .json({ error: error.message || 'Login failed' }); // <‑‑ and this
+        .json({ error: error.message || 'Login failed' }); 
     }
   }
 
   async verifyToken(req, res) {
-    // If middleware passed, token is valid
     res.json({
       valid: true,
       user: req.user
