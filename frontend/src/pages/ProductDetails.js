@@ -114,7 +114,7 @@ const ProductDetails = () => {
         <h2 style={{ marginBottom: 5 }}>{product.name}</h2>
         <div style={{ color: '#555', marginBottom: 12 }}>{product.brand} &middot; {product.category}</div>
         <div style={{ fontSize: '1.5rem', color: '#27ae60', fontWeight: 'bold', marginBottom: 20 }}>
-          ₹{parseFloat(product.price).toLocaleString('en-IN')}
+          ${parseFloat(product.price).toLocaleString('en-IN')}
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <b>Description:</b><br />{product.description || "No description."}

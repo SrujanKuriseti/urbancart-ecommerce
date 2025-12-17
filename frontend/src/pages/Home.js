@@ -145,7 +145,7 @@ const Home = () => {
           />
           <div style={{ marginBottom: 12, fontSize: '1.05rem' }}>{quickViewProduct.description || 'No description.'}</div>
           <div style={{ fontWeight: 700, color: "#16a085", fontSize: '1.23rem', marginBottom: 16 }}>
-            ₹{quickViewProduct.price}
+            ${quickViewProduct.price}
           </div>
         </Modal>
       )}
