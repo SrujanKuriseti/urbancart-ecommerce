@@ -1,3 +1,4 @@
+// backend/src/controllers/customerController.js
 const CustomerDAO = require('../dao/CustomerDAO');
 const AddressDAO = require('../dao/AddressDAO');
 const database = require('../config/database');
@@ -5,21 +6,32 @@ const database = require('../config/database');
 class CustomerController {
   async getProfile(req, res, next) {
     try {
-      const userId = req.user.userId;
-      const customer = await CustomerDAO.findByUserId(userId);
-      const result = await database.query('SELECT * FROM customers WHERE user_id = $1',[userId]);
+      const userId = req.user.id;
+
       if (req.user && req.user.role === 'admin') {
-      return res.status(403).json({ error: 'Admins do not have a customer profile.' });
-      }
-      if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'No customer profile found' });
-      }
-      if (!customer) {
-        return res.status(404).json({ error: 'Customer profile not found' });
+        return res
+          .status(403)
+          .json({ error: 'Admins do not have a customer profile.' });
       }
 
-      res.json(result.rows[0]);
-      res.json(customer);
+      // Try DAO first
+      let customer = await CustomerDAO.findByUserId(userId);
+
+      // If DAO returns nothing, fall back to direct query
+      if (!customer) {
+        const result = await database.query(
+          'SELECT * FROM customers WHERE user_id = $1',
+          [userId]
+        );
+        if (result.rows.length === 0) {
+          return res
+            .status(404)
+            .json({ error: 'No customer profile found' });
+        }
+        customer = result.rows[0];
+      }
+
+      return res.json(customer);
     } catch (err) {
       next(err);
     }
@@ -27,17 +39,35 @@ class CustomerController {
 
   async updateProfile(req, res, next) {
     try {
-      const userId = req.user.userId;
-      const customer = await CustomerDAO.findByUserId(userId);
+      const userId = req.user.id;
 
+      // See if a customer row exists
+      let customer = await CustomerDAO.findByUserId(userId);
+
+      // If not, create one first so reviews & profile both work
       if (!customer) {
-        return res.status(404).json({ error: 'Customer profile not found' });
+        const insertResult = await database.query(
+          `INSERT INTO customers (user_id, firstname, lastname, email, phone, address)
+           VALUES ($1, $2, $3, $4, $5, $6)
+           RETURNING *`,
+          [
+            userId,
+            req.body.firstname || '',
+            req.body.lastname || '',
+            req.body.email || '',
+            req.body.phone || '',
+            req.body.address || ''
+          ]
+        );
+        customer = insertResult.rows[0];
+      } else {
+        // Update existing customer via DAO
+        customer = await CustomerDAO.updateCustomer(customer.id, req.body);
       }
 
-      const updatedCustomer = await CustomerDAO.updateCustomer(customer.id, req.body);
-      res.json({
+      return res.json({
         message: 'Profile updated successfully',
-        customer: updatedCustomer
+        customer
       });
     } catch (error) {
       next(error);
