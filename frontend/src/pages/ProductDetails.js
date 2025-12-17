@@ -146,16 +146,16 @@ const ProductDetails = () => {
             {reviews.map((r) => (
               <div key={r.id} style={{ marginBottom: 10, borderBottom: '1px solid #eee', paddingBottom: 8 }}>
                 <div style={{ fontWeight: 'bold' }}>
-                  {r.firstname} {r.lastname}
+                  {r.first_name} {r.last_name}
                 </div>
                 <Rating readonly size={18} initialValue={r.rating} />
-                {r.reviewtext && (
+                {r.review_text && (
                   <div style={{ fontSize: '0.95rem', color: '#555', marginTop: 4 }}>
-                    {r.reviewtext}
+                    {r.review_text}
                   </div>
                 )}
                 <div style={{ fontSize: '0.8rem', color: '#95a5a6', marginTop: 2 }}>
-                  {new Date(r.createdat).toLocaleDateString()}
+                  {new Date(r.created_at).toLocaleDateString()}
                 </div>
               </div>
             ))}
