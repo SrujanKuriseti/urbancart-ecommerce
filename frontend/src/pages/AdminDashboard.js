@@ -74,11 +74,8 @@ const AdminDashboard = () => {
     alert("No orders to export.");
     return;
   }
-
     const doc = new jsPDF();
-
     doc.text("UrbanCart - Sales Report", 14, 16);
-
     doc.autoTable({
       startY: 22,
       head: [["Order #", "Customer", "Email", "Total", "Status", "Date"]],
