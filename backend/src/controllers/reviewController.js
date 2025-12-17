@@ -42,9 +42,10 @@ const ReviewController = {
 
       // find customer id from user id
       const result = await database.query(
-        "SELECT id FROM customers WHERE userid = $1",
+        "SELECT id FROM customers WHERE user_id = $1",
         [userId]
       );
+
       if (result.rows.length === 0) {
         return res.status(400).json({ error: "Customer profile not found" });
       }
