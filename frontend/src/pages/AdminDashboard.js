@@ -133,8 +133,6 @@ const AdminDashboard = () => {
       first_name: customer.first_name || "",
       last_name: customer.last_name || "",
       email: customer.email || "",
-      is_active:
-        typeof customer.is_active === "boolean" ? customer.is_active : true,
     });
     setIsCustomerModalOpen(true);
   };
@@ -160,7 +158,6 @@ const AdminDashboard = () => {
         first_name: editingCustomer.first_name,
         last_name: editingCustomer.last_name,
         email: editingCustomer.email,
-        is_active: editingCustomer.is_active,
       };
       await customerAPI.updateCustomer(editingCustomer.id, payload);
       alert("Customer updated successfully");
@@ -369,24 +366,6 @@ const AdminDashboard = () => {
                     placeholder="Email"
                     required
                   />
-                  <label
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      fontSize: "0.9rem",
-                      color: "#0f172a",
-                      marginTop: "0.25rem",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      name="is_active"
-                      checked={editingCustomer.is_active}
-                      onChange={handleCustomerFieldChange}
-                    />
-                    Active customer
-                  </label>
                   <div
                     style={{
                       display: "flex",
