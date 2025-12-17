@@ -5,7 +5,7 @@ const faqData = [
     question: "How do I track my order?",
     keywords: ["track", "tracking", "where is my order"],
     answer:
-      "You can track your order from the 'Orders' page after logging in. Go to Profile → Orders to see status and details.",
+      "You can track your order from the 'Orders' page after logging in. Go to Orders to see status and details.",
   },
   {
     question: "What is your return policy?",
