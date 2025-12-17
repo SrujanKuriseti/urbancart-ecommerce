@@ -46,12 +46,12 @@ class CustomerDAO {
 
     const result = await this.db.query(
       `UPDATE customers
-       SET first_name        = COALESCE($1, first_name),
-           last_name         = COALESCE($2, last_name),
-           credit_card_last4 = COALESCE($3, credit_card_last4),
+       SET first_name          = COALESCE($1, first_name),
+           last_name           = COALESCE($2, last_name),
+           credit_card_last4   = COALESCE($3, credit_card_last4),
            shipping_address_id = COALESCE($4, shipping_address_id),
            billing_address_id  = COALESCE($5, billing_address_id),
-           updated_at        = CURRENT_TIMESTAMP
+           updated_at          = CURRENT_TIMESTAMP
        WHERE id = $6
        RETURNING *`,
       [
@@ -75,56 +75,11 @@ class CustomerDAO {
     );
     return result.rows;
   }
-  
-  async updateCustomer(customerId, data) {
-    const {
-      first_name,
-      last_name,
-      credit_card_last4,
-      shipping_address_id,
-      billing_address_id,
-      is_active,
-    } = data;
-
-    const result = await this.db.query(
-      `UPDATE customers
-       SET first_name          = COALESCE($1, first_name),
-           last_name           = COALESCE($2, last_name),
-           credit_card_last4   = COALESCE($3, credit_card_last4),
-           shipping_address_id = COALESCE($4, shipping_address_id),
-           billing_address_id  = COALESCE($5, billing_address_id),
-           is_active           = COALESCE($6, is_active),
-           updated_at          = CURRENT_TIMESTAMP
-       WHERE id = $7
-       RETURNING *`,
-      [
-        first_name,
-        last_name,
-        credit_card_last4,
-        shipping_address_id,
-        billing_address_id,
-        is_active,
-        customerId,
-      ]
-    );
-    return result.rows[0];
-  }
-
-  async getAllCustomers() {
-    const result = await this.db.query(
-      `SELECT c.*, u.email, u.created_at AS user_created
-       FROM customers c
-       JOIN users u ON c.user_id = u.id
-       ORDER BY c.created_at DESC`
-    );
-    return result.rows;
-  }
 
   async deactivateCustomer(customerId) {
     await this.db.query(
       `UPDATE customers
-       SET is_active = FALSE,
-           updated_at = CURRENT_TIMESTAMP
+       SET updated_at = CURRENT_TIMESTAMP
        WHERE id = $1`,
       [customerId]
     );
