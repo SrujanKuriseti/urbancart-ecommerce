@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { catalogAPI, orderAPI, customerAPI } from "../services/api";
 import { formatPrice, formatDate } from "../utils/helpers";
-import { jsPDF } from "jspdf";
+import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 const AdminDashboard = () => {
