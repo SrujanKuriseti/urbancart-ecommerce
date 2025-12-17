@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { catalogAPI } from "../services/api";
-import { cartAPI } from "../services/api";
+import { catalogAPI, cartAPI, customerAPI } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { reviewAPI } from "../services/api";
@@ -43,30 +42,11 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        const res = await fetch(
-          `${process.env.REACT_APP_API_URL ||
-          "https://urbancart-backend-dima.onrender.com/api"
-          }customers/profile`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (!res.ok) {
-          console.error("Profile fetch failed", res.status);
-          return;
-        }
-        const data = await res.json();
-        console.log("👤 CURRENT USER ID:", data.id);
-        console.log("👤 FULL PROFILE:", data);
-        setCurrentUserId(data.id);
+        const res = customerAPI.getProfile();
+        console.log("👤 CUSTOMER API:", res.data);
+        setCurrentUserId(res.data.id);
       } catch (err) {
-        console.error("Error loading user", err);
+        console.error("Customer API failed:", err);
       }
     };
     if (isAuthenticated) fetchCurrentUser();
