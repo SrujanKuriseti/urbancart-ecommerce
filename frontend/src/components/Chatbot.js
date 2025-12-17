@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const faqData = [
   {
@@ -49,6 +49,8 @@ const Chatbot = () => {
     },
   ]);
 
+  const messagesEndRef = useRef(null);
+
   const toggleChat = () => setIsOpen((prev) => !prev);
 
   const findAnswer = (text) => {
@@ -73,6 +75,12 @@ const Chatbot = () => {
     setInput("");
   };
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   return (
     <>
       {/* Floating toggle button */}
@@ -86,8 +94,7 @@ const Chatbot = () => {
           height: "56px",
           borderRadius: "50%",
           border: "none",
-          background:
-            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
           color: "#fff",
           boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
           cursor: "pointer",
@@ -122,8 +129,7 @@ const Chatbot = () => {
           <div
             style={{
               padding: "12px 16px",
-              background:
-                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
               color: "#fff",
             }}
           >
@@ -156,8 +162,7 @@ const Chatbot = () => {
                 style={{
                   marginBottom: 8,
                   display: "flex",
-                  justifyContent:
-                    m.from === "user" ? "flex-end" : "flex-start",
+                  justifyContent: m.from === "user" ? "flex-end" : "flex-start",
                 }}
               >
                 <div
@@ -167,8 +172,7 @@ const Chatbot = () => {
                     borderRadius: 12,
                     fontSize: "0.85rem",
                     lineHeight: 1.35,
-                    background:
-                      m.from === "user" ? "#3498db" : "#e5e7eb",
+                    background: m.from === "user" ? "#3498db" : "#e5e7eb",
                     color: m.from === "user" ? "#fff" : "#111827",
                   }}
                 >
@@ -176,6 +180,8 @@ const Chatbot = () => {
                 </div>
               </div>
             ))}
+
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
