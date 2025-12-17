@@ -5,6 +5,7 @@ import { catalogAPI } from '../services/api';
 import HeroBanner from '../components/HeroBanner';
 import Modal from '../components/Modal';
 import '../styles/Home.css';
+import { useLocation } from 'react-router-dom';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -20,6 +21,16 @@ const Home = () => {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollToProducts) {
+      const section = document.getElementById('products');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [location.state]);  
 
   useEffect(() => {
     fetchProducts();
@@ -166,12 +177,6 @@ const styles = {
     fontSize: '1.1rem',
     color: '#7f8c8d',
   },
-  // grid: {
-  //   display: 'grid',
-  //   gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-  //   gap: '2rem',
-  //   padding: '0 0.5rem'
-  // },
 };
 
 export default Home;
