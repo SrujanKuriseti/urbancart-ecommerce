@@ -19,6 +19,7 @@ const ProductDetails = () => {
   const [reviewCount, setReviewCount] = useState(0);
   const [myRating, setMyRating] = useState(0);
   const [myText, setMyText] = useState("");
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     catalogAPI.getItemById(itemId).then((res) => setProduct(res.data));
@@ -37,6 +38,20 @@ const ProductDetails = () => {
     };
     fetchReviews();
   }, [itemId]);
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await catalogAPI.getCustomerProfile();
+        setCurrentUserId(res.data.user_id);
+      } catch (err) {
+        console.error("Error loading user", err);
+      }
+    };
+    if (isAuthenticated && isAuthenticated()) {
+      fetchCurrentUser();
+    }
+  }, [isAuthenticated]);
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -201,20 +216,22 @@ const ProductDetails = () => {
                   <div style={{ fontWeight: "bold" }}>
                     {r.first_name} {r.last_name}
                   </div>
-                  <button
-                    onClick={() => handleDeleteReview(r.id, itemId)}
-                    style={{
-                      background: "#e74c3c",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "4px",
-                      padding: "4px 12px",
-                      fontSize: "0.8rem",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Delete
-                  </button>
+                  {r.customer_id === currentUserId && (
+                    <button
+                      onClick={() => handleDeleteReview(r.id, itemId)}
+                      style={{
+                        background: "#e74c3c",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        padding: "4px 12px",
+                        fontSize: "0.8rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
                 <Rating readonly size={18} initialValue={r.rating} />
                 {r.review_text && (
