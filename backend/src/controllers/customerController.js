@@ -1,32 +1,30 @@
 // backend/src/controllers/customerController.js
-const CustomerDAO = require('../dao/CustomerDAO');
-const AddressDAO = require('../dao/AddressDAO');
-const database = require('../config/database');
+const CustomerDAO = require("../dao/CustomerDAO");
+const AddressDAO = require("../dao/AddressDAO");
+const database = require("../config/database");
 
 class CustomerController {
   async getProfile(req, res, next) {
     try {
       const userId = req.user.id;
 
-      if (req.user && req.user.role === 'admin') {
+      if (req.user && req.user.role === "admin") {
         return res
           .status(403)
-          .json({ error: 'Admins do not have a customer profile.' });
+          .json({ error: "Admins do not have a customer profile." });
       }
 
-      // Try DAO first
+      // Trying DAO first
       let customer = await CustomerDAO.findByUserId(userId);
 
       // If DAO returns nothing, fall back to direct query
       if (!customer) {
         const result = await database.query(
-          'SELECT * FROM customers WHERE user_id = $1',
+          "SELECT * FROM customers WHERE user_id = $1",
           [userId]
         );
         if (result.rows.length === 0) {
-          return res
-            .status(404)
-            .json({ error: 'No customer profile found' });
+          return res.status(404).json({ error: "No customer profile found" });
         }
         customer = result.rows[0];
       }
@@ -44,30 +42,41 @@ class CustomerController {
       // See if a customer row exists
       let customer = await CustomerDAO.findByUserId(userId);
 
+      // Normalize field names from frontend
+      const firstName =
+        req.body.first_name || req.body.firstname || req.body.fullName || "";
+      const lastName = req.body.last_name || req.body.lastname || "";
+      const email = req.body.email || "";
+      const phone = req.body.phone || "";
+      const address =
+        req.body.address ||
+        req.body.shippingAddress ||
+        req.body.shipping_address ||
+        "";
+
       // If not, create one first so reviews & profile both work
       if (!customer) {
         const insertResult = await database.query(
-          `INSERT INTO customers (user_id, firstname, lastname, email, phone, address)
-           VALUES ($1, $2, $3, $4, $5, $6)
+          `INSERT INTO customers (user_id, first_name, last_name)
+           VALUES ($1, $2, $3)
            RETURNING *`,
-          [
-            userId,
-            req.body.firstname || '',
-            req.body.lastname || '',
-            req.body.email || '',
-            req.body.phone || '',
-            req.body.address || ''
-          ]
+          [userId, firstName, lastName]
         );
         customer = insertResult.rows[0];
       } else {
-        // Update existing customer via DAO
-        customer = await CustomerDAO.updateCustomer(customer.id, req.body);
+        // Update existing customer via DAO (it already knows real column names)
+        customer = await CustomerDAO.updateCustomer(customer.id, {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone,
+          address,
+        });
       }
 
       return res.json({
-        message: 'Profile updated successfully',
-        customer
+        message: "Profile updated successfully",
+        customer,
       });
     } catch (error) {
       next(error);
@@ -79,8 +88,8 @@ class CustomerController {
       const { addressId } = req.params;
       const address = await AddressDAO.updateAddress(addressId, req.body);
       res.json({
-        message: 'Address updated successfully',
-        address
+        message: "Address updated successfully",
+        address,
       });
     } catch (error) {
       next(error);
@@ -91,8 +100,8 @@ class CustomerController {
     try {
       const address = await AddressDAO.createAddress(req.body);
       res.status(201).json({
-        message: 'Address created successfully',
-        address
+        message: "Address created successfully",
+        address,
       });
     } catch (error) {
       next(error);
@@ -114,8 +123,8 @@ class CustomerController {
       const { customerId } = req.params;
       const customer = await CustomerDAO.updateCustomer(customerId, req.body);
       res.json({
-        message: 'Customer updated successfully',
-        customer
+        message: "Customer updated successfully",
+        customer,
       });
     } catch (error) {
       next(error);
