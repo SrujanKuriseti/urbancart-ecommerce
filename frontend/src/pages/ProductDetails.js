@@ -43,7 +43,7 @@ const ProductDetails = () => {
     const fetchCurrentUser = async () => {
       try {
         const res = await catalogAPI.getCustomerProfile();
-        setCurrentUserId(res.data.user_id);
+        setCurrentUserId(res.data.id); 
       } catch (err) {
         console.error("Error loading user", err);
       }
