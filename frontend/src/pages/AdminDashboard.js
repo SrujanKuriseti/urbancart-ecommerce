@@ -69,10 +69,11 @@ const AdminDashboard = () => {
   };
 
   const handleExportOrdersPdf = () => {
-    if (!orders || orders.length === 0) {
-      alert("No orders to export.");
-      return;
-    }
+  console.log("Export Orders PDF clicked");
+  if (!orders || orders.length === 0) {
+    alert("No orders to export.");
+    return;
+  }
 
     const doc = new jsPDF();
 
