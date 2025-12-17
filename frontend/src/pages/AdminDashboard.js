@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { catalogAPI, orderAPI, customerAPI } from "../services/api";
 import { formatPrice, formatDate } from "../utils/helpers";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("orders");
@@ -57,13 +59,39 @@ const AdminDashboard = () => {
     const newQuantity = prompt("Enter new quantity:");
     if (newQuantity !== null) {
       try {
-        await catalogAPI.updateInventory(itemId, parseInt(newQuantity));
+        await catalogAPI.updateInventory(itemId, parseInt(newQuantity, 10));
         alert("Inventory updated!");
         fetchAllData();
       } catch (error) {
         alert("Failed to update inventory");
       }
     }
+  };
+
+  const handleExportOrdersPdf = () => {
+    if (!orders || orders.length === 0) {
+      alert("No orders to export.");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    doc.text("UrbanCart - Sales Report", 14, 16);
+
+    doc.autoTable({
+      startY: 22,
+      head: [["Order #", "Customer", "Email", "Total", "Status", "Date"]],
+      body: orders.map((o) => [
+        o.order_number,
+        `${o.first_name} ${o.last_name}`,
+        o.email,
+        Number(o.total_amount || 0).toFixed(2),
+        o.status,
+        new Date(o.order_date).toLocaleDateString(),
+      ]),
+    });
+
+    doc.save("sales-report.pdf");
   };
 
   const handleNewProductChange = (e) => {
@@ -213,7 +241,9 @@ const AdminDashboard = () => {
           <div style={styles.tabContent}>
             {activeTab === "products" && (
               <div style={styles.section}>
-                <h2 style={styles.sectionTitle}>All Products ({products.length})</h2>
+                <h2 style={styles.sectionTitle}>
+                  All Products ({products.length})
+                </h2>
 
                 {/* Add Product Form */}
                 <div style={styles.addFormCard}>
@@ -287,7 +317,11 @@ const AdminDashboard = () => {
                     />
 
                     <textarea
-                      style={{ ...styles.input, height: "80px", resize: "vertical" }}
+                      style={{
+                        ...styles.input,
+                        height: "80px",
+                        resize: "vertical",
+                      }}
                       name="description"
                       placeholder="Product description"
                       value={newProduct.description}
@@ -348,14 +382,14 @@ const AdminDashboard = () => {
                                     product.quantity > 50
                                       ? "#dcfce7"
                                       : product.quantity > 20
-                                        ? "#fef9c3"
-                                        : "#fee2e2",
+                                      ? "#fef9c3"
+                                      : "#fee2e2",
                                   color:
                                     product.quantity > 50
                                       ? "#16a34a"
                                       : product.quantity > 20
-                                        ? "#ca8a04"
-                                        : "#dc2626",
+                                      ? "#ca8a04"
+                                      : "#dc2626",
                                 }}
                               >
                                 {product.quantity}
@@ -385,6 +419,13 @@ const AdminDashboard = () => {
                 <h2 style={styles.sectionTitle}>
                   All Orders ({orders.length})
                 </h2>
+
+                <button
+                  style={{ ...styles.actionBtn, marginBottom: "1rem" }}
+                  onClick={handleExportOrdersPdf}
+                >
+                  Export Orders PDF
+                </button>
 
                 {orders.length === 0 ? (
                   <div style={styles.emptyState}>
@@ -563,7 +604,7 @@ const styles = {
     width: "50px",
     height: "50px",
     border: "4px solid #e2e8f0",
-    borderTop: "4px solid #667eea",
+    borderTop: "4px solid  #667eea",
     borderRadius: "50%",
     animation: "spin 1s linear infinite",
   },
