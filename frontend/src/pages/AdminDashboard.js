@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { catalogAPI, orderAPI, customerAPI } from "../services/api";
 import { formatPrice, formatDate } from "../utils/helpers";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("orders");
@@ -69,14 +69,14 @@ const AdminDashboard = () => {
   };
 
   const handleExportOrdersPdf = () => {
-  console.log("Export Orders PDF clicked");
-  if (!orders || orders.length === 0) {
-    alert("No orders to export.");
-    return;
-  }
+    console.log("Export Orders PDF clicked");
+    if (!orders || orders.length === 0) {
+      alert("No orders to export.");
+      return;
+    }
     const doc = new jsPDF();
     doc.text("UrbanCart - Sales Report", 14, 16);
-    doc.autoTable({
+    autoTable(doc, {
       startY: 22,
       head: [["Order #", "Customer", "Email", "Total", "Status", "Date"]],
       body: orders.map((o) => [
@@ -88,7 +88,6 @@ const AdminDashboard = () => {
         new Date(o.order_date).toLocaleDateString(),
       ]),
     });
-
     doc.save("sales-report.pdf");
   };
 
