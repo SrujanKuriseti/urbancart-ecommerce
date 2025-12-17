@@ -130,6 +130,38 @@ class CustomerController {
       next(error);
     }
   }
+  
+  async getAllCustomers(req, res, next) {
+    try {
+      const customers = await CustomerDAO.getAllCustomers();
+      res.json(customers);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateCustomer(req, res, next) {
+    try {
+      const { customerId } = req.params;
+      const customer = await CustomerDAO.updateCustomer(customerId, req.body);
+      res.json({
+        message: "Customer updated successfully",
+        customer,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deactivateCustomer(req, res, next) {
+    try {
+      const { customerId } = req.params;
+      await CustomerDAO.deactivateCustomer(customerId);
+      res.json({ message: "Customer deactivated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new CustomerController();

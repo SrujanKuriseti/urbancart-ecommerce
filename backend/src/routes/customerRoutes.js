@@ -24,4 +24,25 @@ router.put('/:customerId',
   CustomerController.updateCustomer
 );
 
+router.get(
+  '/',
+  authenticateToken,
+  authorizeRole('admin'),
+  CustomerController.getAllCustomers
+);
+
+router.put(
+  '/:customerId',
+  authenticateToken,
+  authorizeRole('admin'),
+  CustomerController.updateCustomer
+);
+
+router.delete(
+  '/:customerId',
+  authenticateToken,
+  authorizeRole('admin'),
+  CustomerController.deactivateCustomer
+);
+
 module.exports = router;

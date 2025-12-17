@@ -73,7 +73,10 @@ export const customerAPI = {
   getProfile: () => api.get('/customers/profile'),
   updateProfile: (profileData) => api.put('/customers/profile', profileData),
   getAllCustomers: () => api.get('/customers'),
+  updateCustomer: (id, data) => api.put(`/customers/${id}`, data),
+  deactivateCustomer: (id) => api.delete(`/customers/${id}`),
 };
+
 
 // Admin API (add this before "export default api;")
 export const adminAPI = {

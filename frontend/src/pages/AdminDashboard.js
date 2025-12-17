@@ -20,6 +20,8 @@ const AdminDashboard = () => {
     brand: "",
     quantity: "",
   });
+  const [editingCustomer, setEditingCustomer] = useState(null); // {id, first_name,...}
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
 
   useEffect(() => {
     fetchAllData();
@@ -122,6 +124,67 @@ const AdminDashboard = () => {
       await fetchAllData();
     } catch (error) {
       alert(error.response?.data?.error || "Failed to create product");
+    }
+  };
+
+  const openCustomerModal = (customer) => {
+    setEditingCustomer({
+      id: customer.id,
+      first_name: customer.first_name || "",
+      last_name: customer.last_name || "",
+      email: customer.email || "",
+      is_active:
+        typeof customer.is_active === "boolean" ? customer.is_active : true,
+    });
+    setIsCustomerModalOpen(true);
+  };
+
+  const closeCustomerModal = () => {
+    setIsCustomerModalOpen(false);
+    setEditingCustomer(null);
+  };
+
+  const handleCustomerFieldChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditingCustomer((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSaveCustomer = async (e) => {
+    e.preventDefault();
+    if (!editingCustomer) return;
+    try {
+      const payload = {
+        first_name: editingCustomer.first_name,
+        last_name: editingCustomer.last_name,
+        email: editingCustomer.email,
+        is_active: editingCustomer.is_active,
+      };
+      await customerAPI.updateCustomer(editingCustomer.id, payload);
+      alert("Customer updated successfully");
+      closeCustomerModal();
+      await fetchAllData();
+    } catch (error) {
+      alert(error.response?.data?.error || "Failed to update customer details");
+    }
+  };
+
+  const handleDeactivateCustomer = async (customerId) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to deactivate this customer account?"
+      )
+    ) {
+      return;
+    }
+    try {
+      await customerAPI.deactivateCustomer(customerId);
+      alert("Customer deactivated");
+      await fetchAllData();
+    } catch (error) {
+      alert(error.response?.data?.error || "Failed to deactivate customer");
     }
   };
 
@@ -233,6 +296,124 @@ const AdminDashboard = () => {
               👥 Customers
             </button>
           </div>
+
+          {isCustomerModalOpen && editingCustomer && (
+            <div
+              style={{
+                position: "fixed",
+                inset: 0,
+                background: "rgba(15,23,42,0.45)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 9999,
+              }}
+            >
+              <div
+                style={{
+                  background: "#ffffff",
+                  borderRadius: "16px",
+                  padding: "1.75rem",
+                  width: "420px",
+                  boxShadow: "0 20px 45px rgba(15,23,42,0.3)",
+                }}
+              >
+                <h3
+                  style={{
+                    margin: "0 0 1rem 0",
+                    fontSize: "1.25rem",
+                    fontWeight: 700,
+                    color: "#0f172a",
+                  }}
+                >
+                  Edit Customer
+                </h3>
+                <form
+                  onSubmit={handleSaveCustomer}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.75rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "0.75rem",
+                    }}
+                  >
+                    <input
+                      style={styles.input}
+                      name="first_name"
+                      value={editingCustomer.first_name}
+                      onChange={handleCustomerFieldChange}
+                      placeholder="First name"
+                      required
+                    />
+                    <input
+                      style={styles.input}
+                      name="last_name"
+                      value={editingCustomer.last_name}
+                      onChange={handleCustomerFieldChange}
+                      placeholder="Last name"
+                      required
+                    />
+                  </div>
+                  <input
+                    style={styles.input}
+                    name="email"
+                    type="email"
+                    value={editingCustomer.email}
+                    onChange={handleCustomerFieldChange}
+                    placeholder="Email"
+                    required
+                  />
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      fontSize: "0.9rem",
+                      color: "#0f172a",
+                      marginTop: "0.25rem",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      name="is_active"
+                      checked={editingCustomer.is_active}
+                      onChange={handleCustomerFieldChange}
+                    />
+                    Active customer
+                  </label>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      gap: "0.5rem",
+                      marginTop: "1rem",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={closeCustomerModal}
+                      style={{
+                        ...styles.actionBtn,
+                        background: "#e5e7eb",
+                        color: "#111827",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" style={styles.actionBtn}>
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
 
           {/* Tab Content */}
           <div style={styles.tabContent}>
@@ -518,6 +699,7 @@ const AdminDashboard = () => {
                           <th style={styles.th}>Name</th>
                           <th style={styles.th}>Email</th>
                           <th style={styles.th}>Joined</th>
+                          <th style={styles.th}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -542,14 +724,50 @@ const AdminDashboard = () => {
                                   {customer.first_name?.[0]}
                                   {customer.last_name?.[0]}
                                 </div>
-                                <strong>
-                                  {customer.first_name} {customer.last_name}
-                                </strong>
+                                <div>
+                                  <strong>
+                                    {customer.first_name} {customer.last_name}
+                                  </strong>
+                                  {customer.is_active === false && (
+                                    <div
+                                      style={{
+                                        fontSize: "0.75rem",
+                                        color: "#ef4444",
+                                        marginTop: 2,
+                                      }}
+                                    >
+                                      Inactive
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </td>
                             <td style={styles.td}>{customer.email}</td>
                             <td style={styles.td}>
                               {formatDate(customer.user_created)}
+                            </td>
+                            <td style={styles.td}>
+                              <button
+                                style={{
+                                  ...styles.actionBtn,
+                                  marginRight: "0.5rem",
+                                }}
+                                onClick={() => openCustomerModal(customer)}
+                              >
+                                View / Edit
+                              </button>
+                              <button
+                                style={{
+                                  ...styles.actionBtn,
+                                  background:
+                                    "linear-gradient(135deg, #f97373 0%, #ef4444 100%)",
+                                }}
+                                onClick={() =>
+                                  handleDeactivateCustomer(customer.id)
+                                }
+                              >
+                                Deactivate
+                              </button>
                             </td>
                           </tr>
                         ))}
