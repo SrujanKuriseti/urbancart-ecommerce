@@ -32,6 +32,16 @@ class ReviewDAO {
     );
     return result.rows[0];
   }
+
+  async deleteReview(itemRowId, customerId) {
+    const result = await database.query(
+      `DELETE FROM reviews 
+     WHERE item_id = $1 AND customer_id = $2
+     RETURNING *`,
+      [itemRowId, customerId]
+    );
+    return result.rows[0];
+  }
 }
 
 module.exports = new ReviewDAO();

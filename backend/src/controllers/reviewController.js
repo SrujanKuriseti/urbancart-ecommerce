@@ -64,6 +64,31 @@ const ReviewController = {
       next(err);
     }
   },
+
+  async deleteReview(req, res, next) {
+    try {
+      const { itemId } = req.params;
+      const userId = req.user.id;
+
+      // find customer id from user id
+      const result = await database.query(
+        "SELECT id FROM customers WHERE user_id = $1",
+        [userId]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(400).json({ error: "Customer profile not found" });
+      }
+      const customerId = result.rows[0].id;
+
+      // Delete the review
+      await ReviewDAO.deleteReview(itemId, customerId);
+
+      res.json({ message: "Review deleted" });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 module.exports = ReviewController;

@@ -10,5 +10,6 @@ router.post(
   authenticateToken,
   ReviewController.submitReview
 );
+router.delete('/item/:itemId', authenticateToken, ReviewController.deleteReview);
 
 module.exports = router;
