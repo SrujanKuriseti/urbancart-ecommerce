@@ -185,6 +185,16 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleActivateCustomer = async (customerId) => {
+    try {
+      await customerAPI.activateCustomer(customerId);
+      alert("Customer reactivated");
+      await fetchAllData(); // same function you use after deactivate
+    } catch (error) {
+      alert(error.response?.data?.error || "Failed to activate customer");
+    }
+  };
+
   return (
     <div style={styles.container}>
       {/* Header */}
@@ -735,18 +745,34 @@ const AdminDashboard = () => {
                               >
                                 View / Edit
                               </button>
-                              <button
-                                style={{
-                                  ...styles.actionBtn,
-                                  background:
-                                    "linear-gradient(135deg, #f97373 0%, #ef4444 100%)",
-                                }}
-                                onClick={() =>
-                                  handleDeactivateCustomer(customer.id)
-                                }
-                              >
-                                Deactivate
-                              </button>
+
+                              {customer.is_active === false ? (
+                                <button
+                                  style={{
+                                    ...styles.actionBtn,
+                                    background:
+                                      "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+                                  }}
+                                  onClick={() =>
+                                    handleActivateCustomer(customer.id)
+                                  }
+                                >
+                                  Activate
+                                </button>
+                              ) : (
+                                <button
+                                  style={{
+                                    ...styles.actionBtn,
+                                    background:
+                                      "linear-gradient(135deg, #f97373 0%, #ef4444 100%)",
+                                  }}
+                                  onClick={() =>
+                                    handleDeactivateCustomer(customer.id)
+                                  }
+                                >
+                                  Deactivate
+                                </button>
+                              )}
                             </td>
                           </tr>
                         ))}
