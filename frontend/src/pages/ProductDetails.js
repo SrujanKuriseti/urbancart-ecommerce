@@ -42,8 +42,14 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const res = await catalogAPI.getCustomerProfile();
-        setCurrentUserId(res.data.id); 
+        const res = await fetch("/api/customers/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await res.json();
+        console.log("Customer profile response:", data);
+        setCurrentUserId(data.id);
       } catch (err) {
         console.error("Error loading user", err);
       }
