@@ -68,10 +68,14 @@ class CustomerDAO {
 
   async getAllCustomers() {
     const result = await this.db.query(
-      `SELECT c.*, u.email, u.created_at AS user_created
-       FROM customers c
-       JOIN users u ON c.user_id = u.id
-       ORDER BY c.created_at DESC`
+      `SELECT
+       c.*,
+       u.email,
+       u.created_at AS user_created,
+       u.is_active   AS is_active
+     FROM customers c
+     JOIN users u ON c.user_id = u.id
+     ORDER BY c.created_at DESC`
     );
     return result.rows;
   }
