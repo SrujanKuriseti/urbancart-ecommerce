@@ -1,5 +1,6 @@
 // backend/src/controllers/reviewController.js
-const ReviewDAO = require('../dao/ReviewDAO');
+const ReviewDAO = require("../dao/ReviewDAO");
+const database = require("../config/database");
 
 const ReviewController = {
   async getItemReviews(req, res, next) {
@@ -22,10 +23,10 @@ const ReviewController = {
     }
   },
 
-  async addOrUpdateReview(req, res, next) {
+  async submitReview(req, res, next) {
     try {
       const { itemId } = req.params;
-      const userId = req.user.userId; 
+      const userId = req.user.id;
       const { rating, reviewText } = req.body;
 
       const parsedRating = parseInt(rating, 10);
@@ -36,27 +37,28 @@ const ReviewController = {
       ) {
         return res
           .status(400)
-          .json({ error: 'Rating must be an integer between 1 and 5' });
+          .json({ error: "Rating must be an integer between 1 and 5" });
       }
 
       // find customer id from user id
-      const result = await req.app.locals.db.query(
-        'SELECT id FROM customers WHERE userid = $1',
+      const result = await database.query(
+        "SELECT id FROM customers WHERE userid = $1",
         [userId]
       );
       if (result.rows.length === 0) {
-        return res.status(400).json({ error: 'Customer profile not found' });
+        return res.status(400).json({ error: "Customer profile not found" });
       }
       const customerId = result.rows[0].id;
 
+      // Use ReviewDAO to insert
       const review = await ReviewDAO.upsertReview(
         itemId,
         customerId,
         parsedRating,
-        reviewText || ''
+        reviewText || ""
       );
 
-      res.json({ message: 'Review saved', review });
+      res.json({ message: "Review saved", review });
     } catch (err) {
       next(err);
     }
