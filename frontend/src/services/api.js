@@ -85,7 +85,7 @@ export const adminAPI = {
 export const reviewAPI = {
   getItemReviews: (itemId) => api.get(`/reviews/item/${itemId}`),
   submitReview: (itemId, data) => api.post(`/reviews/item/${itemId}`, data),
-    deleteReview: (itemId) => api.delete(`/reviews/item/${itemId}`), 
+  deleteReview: (itemId) => api.delete(`/reviews/item/${itemId}`), 
 };
 
 export default api;

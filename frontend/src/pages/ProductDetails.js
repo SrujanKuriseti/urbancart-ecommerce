@@ -32,6 +32,7 @@ const ProductDetails = () => {
         setReviews(res.data.reviews);
         setAverageRating(res.data.averageRating);
         setReviewCount(res.data.reviewCount);
+        console.log("🔍 REVIEWS DATA:", res.data.reviews);
       } catch (err) {
         console.error("Error loading reviews", err);
       }
@@ -43,36 +44,37 @@ const ProductDetails = () => {
     const fetchCurrentUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) return; // Don't fetch if no token
-
-        const res = await fetch("/api/customers/profile", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
+        if (!token) return;
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL ||
+          "https://urbancart-backend-dima.onrender.com/api"
+          }customers/profile`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (!res.ok) {
-          console.error("Profile fetch failed:", res.status);
+          console.error("Profile fetch failed", res.status);
           return;
         }
-
         const data = await res.json();
-        console.log("Customer profile response:", data);
+        console.log("👤 CURRENT USER ID:", data.id);
+        console.log("👤 FULL PROFILE:", data);
         setCurrentUserId(data.id);
       } catch (err) {
         console.error("Error loading user", err);
       }
     };
-    if (isAuthenticated && isAuthenticated()) {
-      fetchCurrentUser();
-    }
+    if (isAuthenticated) fetchCurrentUser();
   }, [isAuthenticated]);
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
-    if (!isAuthenticated || !isAuthenticated()) {
+    if (!isAuthenticated) {
       alert("Please log in to write a review.");
       navigate("/login");
       return;
