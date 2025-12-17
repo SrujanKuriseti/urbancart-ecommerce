@@ -17,6 +17,7 @@ import Profile from './pages/Profile';
 import ProductDetails from './pages/ProductDetails';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
                 />
               </Routes>
             </main>
+            <Chatbot />
           </div>
           <Footer />
         </CartProvider>
