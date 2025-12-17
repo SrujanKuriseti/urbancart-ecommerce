@@ -42,11 +42,22 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) return; // Don't fetch if no token
+
         const res = await fetch("/api/customers/profile", {
+          method: "GET",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
+
+        if (!res.ok) {
+          console.error("Profile fetch failed:", res.status);
+          return;
+        }
+
         const data = await res.json();
         console.log("Customer profile response:", data);
         setCurrentUserId(data.id);
