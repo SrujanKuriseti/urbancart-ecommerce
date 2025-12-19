@@ -6,9 +6,21 @@ The database schema and seed data are already included in the repo (SQL script),
 **Frontend + Backend**: https://github.com/SrujanKuriseti/urbancart-ecommerce 
 **Live Deployment**:https://urbancart-ecommerce.vercel.app/
 
+For live deployment First enter the backend link: `https://urbancart-ecommerce.vercel.app/` and it will load the backend and prints `{"error":"Route not found"}`. 
+Once that message shows then you can open the live link: `https://urbancart-ecommerce.vercel.app/`.
+
 ## Admin Credentials
 **Email**: `admin@store.com`  
 **Password**: `admin123`
+
+## Test accounts
+Only in cloud deployment since its stored on render backend. Not for local deployment
+1. 
+**Email**: `smith@yu.ca`  
+**Password**: `smith123`
+2. 
+**Email**: `smith@yu.ca`  
+**Password**: `smith123`
 
 ## Valid Test Cards (Luhn algorithm)
 | Card Number        | Brand        | Status        |
