@@ -72,7 +72,7 @@ DB_HOST=localhost
 DB_PORT=5432  
 DB_NAME=ecommerce_db  
 DB_USER=postgres  
-DB_PASSWORD=EECS4413
+DB_PASSWORD=YOUR_POSTGRES_PASSWORD
 
 # JWT
 JWT_SECRET=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6
@@ -139,11 +139,16 @@ Use this account only for accessing the  **Admin Dashboard**  (managing products
 -   The schema creates the admin account only.
 -   Additional customer accounts should be created via the registration flow in the website or Manually insert extra users/customers in Postgres if you want predefined ones.
 
-## Deployment Reproduction
+## 7. Stopping the app
+
+-   Stop backend: press  `Ctrl + C`  in the backend terminal.
+-   Stop frontend: press  `Ctrl + C`  in the frontend terminal.
+
+## 8. Deployment Reproduction
 1. **Backend (Render)**: New → PostgreSQL, New → Web Service → Connect GitHub → Root: `backend`
 2. **Frontend (Vercel)**: New Project → Connect GitHub → Root: `frontend`
 
-## Features
+## 9. Features
 - Customer: Browse catalog, cart/checkout, profile, order history, product reviews
 - Admin: Dashboard, inventory management, PDF sales reports
 - Security: JWT auth, bcrypt, parameterized SQL
