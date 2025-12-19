@@ -62,22 +62,21 @@ This installs Express, pg, bcrypt, jsonwebtoken, cors, and other backend depende
 ### 4.2 Create  `backend/.env`
 In the  **`backend/`**  folder, create a file named  `.env`  with:
 
-
-\# Server
+# Server
 PORT=5000
 NODE_ENV=development
 
-\# Database
+# Database
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=ecommerce_db
 DB_USER=postgres
 DB_PASSWORD=YOUR_POSTGRES_PASSWORD
 
-\# JWT
+# JWT
 JWT_SECRET=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6
 
-\# Frontend URL (for CORS)
+# Frontend URL (for CORS)
 FRONTEND_URL=http://localhost:3000
 
 
