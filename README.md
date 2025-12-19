@@ -15,10 +15,9 @@ Once that message shows then you can open the live link: https://urbancart-ecomm
 
 ## Test accounts
 Only in cloud deployment since its stored on render backend. Not for local deployment
-1. 
 **Email**: `smith@yu.ca`  
 **Password**: `smith123`
-2. 
+
 **Email**: `smith@yu.ca`  
 **Password**: `smith123`
 
