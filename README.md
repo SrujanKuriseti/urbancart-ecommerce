@@ -3,11 +3,11 @@ This guide explains how to run the  **UrbanCart**  e‑commerce app locally usin
 
 The database schema and seed data are already included in the repo (SQL script), so the only file you must add manually is the backend  **`.env`**.
 ## Repository Links
-**Frontend + Backend**: https://github.com/SrujanKuriseti/urbancart-ecommerce 
-**Live Deployment**:https://urbancart-ecommerce.vercel.app/
+- **Frontend + Backend**: https://github.com/SrujanKuriseti/urbancart-ecommerce 
+- **Live Deployment**:https://urbancart-ecommerce.vercel.app/
 
-For live deployment First enter the backend link: `https://urbancart-ecommerce.vercel.app/` and it will load the backend and prints `{"error":"Route not found"}`. 
-Once that message shows then you can open the live link: `https://urbancart-ecommerce.vercel.app/`.
+For live deployment First enter the backend link: https://urbancart-ecommerce.vercel.app/ and it will load the backend and prints `{"error":"Route not found"}` in browser. 
+Once that message shows then you can open the live link: https://urbancart-ecommerce.vercel.app/
 
 ## Admin Credentials
 **Email**: `admin@store.com`  
