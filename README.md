@@ -19,8 +19,8 @@ Only in cloud deployment since its stored on render backend. Not for local deplo
 **Email**: `smith@yu.ca`  
 **Password**: `smith123`
 
-**Email**: `smith@yu.ca`  
-**Password**: `smith123`
+**Email**: `tom@yu.ca`  
+**Password**: `tom123`
 
 ## Valid Test Cards (Luhn algorithm)
 | Card Number        | Brand        | Status        |
