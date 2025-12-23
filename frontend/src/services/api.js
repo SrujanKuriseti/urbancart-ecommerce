@@ -79,7 +79,7 @@ export const customerAPI = {
 };
 
 
-// Admin API (add this before "export default api;")
+// Admin API
 export const adminAPI = {
   getAllOrders: () => api.get('/orders'),
   getAllCustomers: () => api.get('/customers'),
